@@ -1,2 +1,4 @@
 I did lab 1 for extra credit, I did not change to controls other then
 switching the num controls around for my own preference.
+
+Lab 2 : I added a cuser

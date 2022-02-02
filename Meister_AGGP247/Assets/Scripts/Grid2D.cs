@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Grid2D : MonoBehaviour
 {
+    DrawereringTool drawerer = new DrawereringTool();
     public class Grid
     {
         public Vector3 screenSize;
@@ -17,6 +18,10 @@ public class Grid2D : MonoBehaviour
         public int minDivisionCount = 2;
     }
 
+    public int originType;
+
+    public Vector3 Curser;
+
     public Color axisColor = Color.white;
     public Color lineColor = Color.gray;
     public Color divisionColor = Color.yellow;
@@ -24,30 +29,29 @@ public class Grid2D : MonoBehaviour
     public bool isDrawingOrigin = true;
     public bool isDrawingAxis = true;
     public bool isDrawingDivisions = true;
+    public bool isDrawingCurser = true;
 
     Grid grid = new Grid();
-
-    //User Inputs
-    float zoomGrid;
-    float zoomDivision;
-    bool moveGrid;
-    bool toggleOrigin;
-    bool toggleAxis;
-    bool toggleDivisions;
 
 
     private void Start()
     {
         grid.screenSize = new Vector3(Screen.width, Screen.height);
         grid.origin = new Vector3(Screen.width / 2, Screen.height / 2);
+        Curser = grid.origin;
+        Debug.Log("Origin = " + grid.origin);
     }
 
     void Update()
     {
         getInputs();
+        if (isDrawingCurser)
+        {
+            drawCurser(Curser);
+        }
         if (isDrawingOrigin)
         {
-            DrawOrigin(grid.origin);
+            DrawOrigin(grid.origin, 3, originType);
         }
         if(isDrawingDivisions)
         {
@@ -58,13 +62,13 @@ public class Grid2D : MonoBehaviour
     //Takes the potential grid space and outputs it into screen space
     public Vector3 GridToScreen(Vector3 gridSpace)
     {
-        return Vector3.zero;
+        return (gridSpace * grid.gridSize) + grid.origin;
     }
 
     //Takes in screen space and outputs it as grid space
     public Vector3 ScreenToGrid(Vector3 screenSpace)
     {
-        return Vector3.zero;
+        return (screenSpace - grid.origin) / grid.gridSize;
     }
 
     //Draws the given line
@@ -74,13 +78,54 @@ public class Grid2D : MonoBehaviour
     }
 
     //Draws the Origin Point(or Symbol)
-    public void DrawOrigin(Vector3 drawPoint)
+    public void DrawOrigin(Vector3 drawPoint, float size, int type)
     {
-        int size = 3;
-        DrawLine(new Line(new Vector3(drawPoint.x + size, drawPoint.y, 0), new Vector3(drawPoint.x, drawPoint.y + size, 0), Color.red));
-        DrawLine(new Line(new Vector3(drawPoint.x, drawPoint.y + size, 0), new Vector3(drawPoint.x - size, drawPoint.y, 0), Color.red));
-        DrawLine(new Line(new Vector3(drawPoint.x - size, drawPoint.y, 0), new Vector3(drawPoint.x, drawPoint.y - size, 0), Color.red));
-        DrawLine(new Line(new Vector3(drawPoint.x, drawPoint.y - size, 0), new Vector3(drawPoint.x + size, drawPoint.y, 0), Color.red));
+        if(type == 1)
+        {
+            drawerer.drawOrigin(drawPoint, size, Color.red);
+        }
+        if(type == 2)
+        {
+            drawerer.drawTicker(drawPoint, size);
+        }
+        if (type == 3)
+        {
+            drawerer.drawHexagon(drawPoint, size);
+        }
+        if (type == 4)
+        {
+            drawerer.ParabolasA();
+        }
+        //if (type == 5)
+        //{
+        //    drawerer.ParabolasB();
+        //}
+        //if (type == 6)
+        //{
+        //    drawerer.ParabolasC();
+        //}
+        //if (type == 7)
+        //{
+        //    drawerer.ParabolasD();
+        //}
+        if (type == 8)
+        {
+            drawerer.drawDiamond(drawPoint);
+        }
+        if (type == 9)
+        {
+        }
+        else
+        {
+            drawerer.drawOrigin(drawPoint, size, Color.red);
+        }
+    }
+    public void drawCurser(Vector3 Curser)
+    {
+        Glint.AddCommand(new Line(new Vector3(Curser.x + 2, Curser.y, 0), new Vector3(Curser.x + 5, Curser.y, 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x, Curser.y + 2, 0), new Vector3(Curser.x, Curser.y + 5, 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x - 2, Curser.y, 0), new Vector3(Curser.x - 5, Curser.y, 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x, Curser.y - 2, 0), new Vector3(Curser.x, Curser.y - 5, 0), Color.cyan));
     }
 
     public void DrawGrid()
@@ -92,13 +137,13 @@ public class Grid2D : MonoBehaviour
 
         while (V.x <= Max.x)
         {
-            DrawLine(new Line(new Vector3(V.x, Max.y, 0), new Vector3(V.x, Min.y, 0), ColorCheck(V.x)));
+            Glint.AddCommand(new Line(new Vector3(V.x, Max.y, 0), new Vector3(V.x, Min.y, 0), ColorCheck(V.x)));
             V.x += grid.gridSize;
         }
 
         while (V.y <= Max.y)
         {
-            DrawLine(new Line(new Vector3(Max.x, V.y, 0), new Vector3(Min.x, V.y, 0), ColorCheck(V.y)));
+            Glint.AddCommand(new Line(new Vector3(Max.x, V.y, 0), new Vector3(Min.x, V.y, 0), ColorCheck(V.y)));
             V.y += grid.gridSize;
         }
     }
@@ -119,7 +164,7 @@ public class Grid2D : MonoBehaviour
 
     public void getInputs()
     {
-        if(Input.GetKey(KeyCode.LeftControl))
+        if(Input.GetKey(KeyCode.LeftControl)) 
         {
             grid.divisionCount += (int)Mathf.Round(Input.mouseScrollDelta.y);
         }
@@ -128,9 +173,17 @@ public class Grid2D : MonoBehaviour
             grid.gridSize += Input.mouseScrollDelta.y;
         }
 
+        if (Input.GetMouseButton(1))
+        {
+            Curser = Input.mousePosition;
+            Debug.Log("New curser = " + Curser);
+            Debug.Log("Chart point = " + ScreenToGrid(Curser));
+        }
+
         if (Input.GetMouseButton(2))
         {
             grid.origin = Input.mousePosition;
+            Debug.Log("New Origin = " + grid.origin);
         }
 
         if(Input.GetKeyDown(KeyCode.Alpha1))
@@ -147,7 +200,6 @@ public class Grid2D : MonoBehaviour
         {
             isDrawingOrigin = !isDrawingOrigin;
         }
-
     }
 }
 
