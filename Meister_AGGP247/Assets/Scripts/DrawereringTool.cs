@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DrawereringTool : MonoBehaviour
 {
-
+    public Grid2D grid;
 
     Vector3 start;
     Vector3 sectickerPos;
@@ -12,6 +12,15 @@ public class DrawereringTool : MonoBehaviour
     Vector3 houtickerPos;
     public float ticTime = 1f;
     float timeCheck;
+
+
+    List<Line> ParaA = new List<Line>();
+    List<Line> ParaB = new List<Line>();
+    List<Line> ParaC = new List<Line>();
+    List<Line> ParaD = new List<Line>();
+    List<Vector3> Points = new List<Vector3>();
+
+
     private void Start()
     {
         GetParabolas();
@@ -76,66 +85,162 @@ public class DrawereringTool : MonoBehaviour
     }
 
 
-
-
-    List<Line> ParaA = new List<Line>();
-    List<Vector3> Points = new List<Vector3>();
     public void GetParabolas()
     {
+        ParaA = new List<Line>();
+        ParaB = new List<Line>();
+        ParaC = new List<Line>();
+        ParaD = new List<Line>();
+        Points = new List<Vector3>();
+        GetParabolaA();
+        Points = new List<Vector3>();
+        GetParabolaB();
+        Points = new List<Vector3>();
+        GetParabolaC();
+        Points = new List<Vector3>();
+        GetParabolaD();
+    }
+
+    void GetParabolaA()
+    {
         int y = 0;
-        int x = -20;
-        while (x < 20)
+        int x = -grid.grid.divisionCount;
+        while (x < grid.grid.divisionCount)
         {
-            y = x ^ 2;
-            x++;
+            y = x * x;
             Points.Add(new Vector3(x, y, 0));
+            x++;
         }
-        Debug.Log(Points.Count);
         Vector3 start = Vector3.zero;
         foreach (Vector3 v in Points)
         {
             if (start == Vector3.zero)
             {
                 start = v;
-                return;
             }
             else
             {
                 ParaA.Add(new Line(start, v, Color.red));
+                start = v;
             }
         }
-
     }
-    public void ParabolasA()
+    public void ParabolaA()
     {
-        foreach(Line l in ParaA)
+        foreach (Line l in ParaA)
         {
-            Glint.AddCommand(l);
+            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
         }
     }
-    public void ParabolasB()
+
+    void GetParabolaB()
     {
-        //y = x ^ 2 + 2x + 1
+        float y = 0;
+        float x = -grid.grid.divisionCount;
+        while (x < grid.grid.divisionCount)
+        {
+            //y = x ^ 2 + 2x + 1
+            y = (x * x) + (2 * x) + 1;
+            Points.Add(new Vector3(x, y, 0));
+            x++;
+        }
+        Vector3 start = Vector3.zero;
+        foreach (Vector3 v in Points)
+        {
+            if (start == Vector3.zero)
+            {
+                start = v;
+            }
+            else
+            {
+                ParaB.Add(new Line(start, v, Color.red));
+                start = v;
+            }
+        }
     }
-    public void ParabolasC()
+    public void ParabolaB()
     {
-        //y = -2x ^ 2 + 10x + 12
+        foreach (Line l in ParaB)
+        {
+            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+        }
     }
-    public void ParabolasD()
+
+    void GetParabolaC()
     {
-        //x = -y ^ 3
+        float y = 0;
+        int x = -grid.grid.divisionCount;
+        while (x < grid.grid.divisionCount)
+        {
+            //y = -2x ^ 2 + 10x + 12
+            y = -2 * (x - 6) * (x + 1);
+            Points.Add(new Vector3(x, y, 0));
+            x++;
+        }
+        Vector3 start = Vector3.zero;
+        foreach (Vector3 v in Points)
+        {
+            if (start == Vector3.zero)
+            {
+                start = v;
+            }
+            else
+            {
+                ParaC.Add(new Line(start, v, Color.red));
+                start = v;
+            }
+        }
     }
-    List<Line> Diamond;
+    public void ParabolaC()
+    {
+        foreach (Line l in ParaC)
+        {
+            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+        }
+    }
+
+    void GetParabolaD()
+    {
+        float x = 0;
+        int y = -grid.grid.divisionCount;
+        while (y < grid.grid.divisionCount)
+        {
+            //x = -y ^ 3
+            x = Mathf.Pow(-y, 3);
+            Points.Add(new Vector3(x, y, 0));
+            y++;
+        }
+        Vector3 start = Vector3.zero;
+        foreach (Vector3 v in Points)
+        {
+            if (start == Vector3.zero)
+            {
+                start = v;
+            }
+            else
+            {
+                ParaD.Add(new Line(start, v, Color.red));
+                start = v;
+            }
+        }
+    }
+    public void ParabolaD()
+    {
+        foreach (Line l in ParaD)
+        {
+            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+        }
+    }
+
+
+
+
     public void drawDiamond(Vector3 Center)
     {
         Glint.AddCommand(new Line(new Vector3(Center.x + 25, Center.y, 0), new Vector3(Center.x, Center.y + 50, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y + 50, 0), new Vector3(Center.x - 25, Center.y, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x - 25, Center.y, 0), new Vector3(Center.x, Center.y - 50, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y - 50, 0), new Vector3(Center.x + 25, Center.y, 0), Color.red));
-    }
-    public void drawRotatingDiamond(Vector3 Center)
-    {
-
     }
 
 

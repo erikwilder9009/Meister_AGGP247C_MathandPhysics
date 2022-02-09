@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Grid2D : MonoBehaviour
 {
-    DrawereringTool drawerer = new DrawereringTool();
+    public DrawereringTool drawerer;
     public class Grid
     {
         public Vector3 screenSize;
@@ -31,19 +32,23 @@ public class Grid2D : MonoBehaviour
     public bool isDrawingDivisions = true;
     public bool isDrawingCurser = true;
 
-    Grid grid = new Grid();
+    public Grid grid = new Grid();
 
+
+    public Text gridData;
+
+    
 
     private void Start()
     {
         grid.screenSize = new Vector3(Screen.width, Screen.height);
         grid.origin = new Vector3(Screen.width / 2, Screen.height / 2);
         Curser = grid.origin;
-        Debug.Log("Origin = " + grid.origin);
     }
 
     void Update()
     {
+        UpdateData();
         getInputs();
         if (isDrawingCurser)
         {
@@ -94,30 +99,23 @@ public class Grid2D : MonoBehaviour
         }
         if (type == 4)
         {
-            drawerer.ParabolasA();
+            drawerer.ParabolaA();
         }
-        //if (type == 5)
-        //{
-        //    drawerer.ParabolasB();
-        //}
-        //if (type == 6)
-        //{
-        //    drawerer.ParabolasC();
-        //}
-        //if (type == 7)
-        //{
-        //    drawerer.ParabolasD();
-        //}
+        if (type == 5)
+        {
+            drawerer.ParabolaB();
+        }
+        if (type == 6)
+        {
+            drawerer.ParabolaC();
+        }
+        if (type == 7)
+        {
+            drawerer.ParabolaD();
+        }
         if (type == 8)
         {
             drawerer.drawDiamond(drawPoint);
-        }
-        if (type == 9)
-        {
-        }
-        else
-        {
-            drawerer.drawOrigin(drawPoint, size, Color.red);
         }
     }
     public void drawCurser(Vector3 Curser)
@@ -160,12 +158,20 @@ public class Grid2D : MonoBehaviour
         }
         return drawColor;
     }
-
+    void UpdateData()
+    {
+        gridData.text = "T:(1024x768)" +
+            "\nResolution = " + grid.screenSize +
+            "\nOrigin = " + grid.origin +
+            "\nCurser Location = " + Curser + " (" + ScreenToGrid(Curser) + ")" +
+            "\nDivision Count = " + grid.divisionCount;
+    }
 
     public void getInputs()
     {
         if(Input.GetKey(KeyCode.LeftControl)) 
         {
+            drawerer.GetParabolas();
             grid.divisionCount += (int)Mathf.Round(Input.mouseScrollDelta.y);
         }
         else
@@ -176,14 +182,11 @@ public class Grid2D : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             Curser = Input.mousePosition;
-            Debug.Log("New curser = " + Curser);
-            Debug.Log("Chart point = " + ScreenToGrid(Curser));
         }
 
         if (Input.GetMouseButton(2))
         {
             grid.origin = Input.mousePosition;
-            Debug.Log("New Origin = " + grid.origin);
         }
 
         if(Input.GetKeyDown(KeyCode.Alpha1))
@@ -199,6 +202,18 @@ public class Grid2D : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             isDrawingOrigin = !isDrawingOrigin;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            if(originType < 8)
+            {
+                originType++;
+            }
+            else
+            {
+                originType = 0;
+            }
         }
     }
 }
