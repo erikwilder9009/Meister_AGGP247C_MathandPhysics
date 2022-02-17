@@ -559,13 +559,16 @@ MonoBehaviour:
     Origin
 
 
+    C : Draw Circle
+
+
     Middle Mouse : Move Grid
 
-    Right Mouse : Set Curser
+    Right Mouse
+    : Set Curser
 
 
-    Mouse
-    Scroll : Zoom
+    Mouse Scroll : Zoom
 
     Ctrl + Mouse Scroll : Grid Size'
 --- !u!222 &1144005817
@@ -631,6 +634,7 @@ MonoBehaviour:
   isDrawingDivisions: 1
   isDrawingCurser: 1
   gridData: {fileID: 1770238866}
+  originSize: 3
 --- !u!114 &1218807328
 MonoBehaviour:
   m_ObjectHideFlags: 0

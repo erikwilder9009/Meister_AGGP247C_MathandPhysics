@@ -56,12 +56,17 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\DrawereringTool.cs" />
     <Compile Include="Assets\Glint\Glint.cs" />
     <Compile Include="Assets\Scripts\Shapes\Line.cs" />
+    <Compile Include="Assets\Scripts\MathTool.cs" />
     <Compile Include="Assets\Scripts\DrawingTest.cs" />
+    <Compile Include="Assets\Scripts\Circle.cs" />
     <Compile Include="Assets\Glint\GlintDrawing.cs" />
+    <Compile Include="Assets\Scripts\CircleBase.cs" />
+    <Compile Include="Assets\Scripts\Ellipse.cs" />
     <Compile Include="Assets\Scripts\Grid2D.cs" />
-    <Compile Include="Assets\Scripts\DrawereringTool.cs" />
+    <Compile Include="Assets\Scripts\Collision.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Glint\VertexColor.shader" />

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class Grid2D : MonoBehaviour
 {
     public DrawereringTool drawerer;
+    MathTool MT = new MathTool();
+
     public class Grid
     {
         public Vector3 screenSize;
@@ -37,7 +39,10 @@ public class Grid2D : MonoBehaviour
 
     public Text gridData;
 
-    
+    public int originSize = 3;
+
+    bool drawCircle;
+    bool drawEllipse;
 
     private void Start()
     {
@@ -56,24 +61,19 @@ public class Grid2D : MonoBehaviour
         }
         if (isDrawingOrigin)
         {
-            DrawOrigin(grid.origin, 3, originType);
+            DrawOrigin(grid.origin, originSize, originType);
         }
         if(isDrawingDivisions)
         {
             DrawGrid();
         }
-    }
-
-    //Takes the potential grid space and outputs it into screen space
-    public Vector3 GridToScreen(Vector3 gridSpace)
-    {
-        return (gridSpace * grid.gridSize) + grid.origin;
-    }
-
-    //Takes in screen space and outputs it as grid space
-    public Vector3 ScreenToGrid(Vector3 screenSpace)
-    {
-        return (screenSpace - grid.origin) / grid.gridSize;
+        if(drawCircle)
+        {
+            drawerer.DrawCircle(Curser, 1, 32, Color.red);
+        }
+        if(drawEllipse)
+        {
+        }
     }
 
     //Draws the given line
@@ -120,10 +120,10 @@ public class Grid2D : MonoBehaviour
     }
     public void drawCurser(Vector3 Curser)
     {
-        Glint.AddCommand(new Line(new Vector3(Curser.x + 2, Curser.y, 0), new Vector3(Curser.x + 5, Curser.y, 0), Color.cyan));
-        Glint.AddCommand(new Line(new Vector3(Curser.x, Curser.y + 2, 0), new Vector3(Curser.x, Curser.y + 5, 0), Color.cyan));
-        Glint.AddCommand(new Line(new Vector3(Curser.x - 2, Curser.y, 0), new Vector3(Curser.x - 5, Curser.y, 0), Color.cyan));
-        Glint.AddCommand(new Line(new Vector3(Curser.x, Curser.y - 2, 0), new Vector3(Curser.x, Curser.y - 5, 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x + (.1f * grid.gridSize), Curser.y, 0), new Vector3(Curser.x + (.5f * grid.gridSize), Curser.y, 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x, Curser.y + (.1f * grid.gridSize), 0), new Vector3(Curser.x, Curser.y + (.5f * grid.gridSize), 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x - (.1f * grid.gridSize), Curser.y, 0), new Vector3(Curser.x - (.5f * grid.gridSize), Curser.y, 0), Color.cyan));
+        Glint.AddCommand(new Line(new Vector3(Curser.x, Curser.y - (.1f * grid.gridSize), 0), new Vector3(Curser.x, Curser.y - (.5f * grid.gridSize), 0), Color.cyan));
     }
 
     public void DrawGrid()
@@ -163,8 +163,9 @@ public class Grid2D : MonoBehaviour
         gridData.text = "T:(1024x768)" +
             "\nResolution = " + grid.screenSize +
             "\nOrigin = " + grid.origin +
-            "\nCurser Location = " + Curser + " (" + ScreenToGrid(Curser) + ")" +
-            "\nDivision Count = " + grid.divisionCount;
+            "\nCurser Location = " + Curser + " (" + MT.ScreenToGrid(Curser, grid) + ")" +
+            "\nDivision Count = " + grid.divisionCount + 
+            "\n" + Time.deltaTime;
     }
 
     public void getInputs()
@@ -204,6 +205,11 @@ public class Grid2D : MonoBehaviour
             isDrawingOrigin = !isDrawingOrigin;
         }
 
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            isDrawingCurser = !isDrawingCurser;
+        }
+
         if(Input.GetKeyDown(KeyCode.Alpha0))
         {
             if(originType < 8)
@@ -215,6 +221,12 @@ public class Grid2D : MonoBehaviour
                 originType = 0;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            drawCircle = !drawCircle;
+        }
+        drawEllipse = Input.GetKeyDown(KeyCode.E);
     }
 }
 

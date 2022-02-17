@@ -6,6 +6,8 @@ public class DrawereringTool : MonoBehaviour
 {
     public Grid2D grid;
 
+    MathTool MT = new MathTool();
+
     Vector3 start;
     Vector3 sectickerPos;
     Vector3 mintickerPos;
@@ -27,7 +29,6 @@ public class DrawereringTool : MonoBehaviour
         timeCheck = Time.time;
     }
 
-    
 
 
     public void drawOrigin(Vector3 Center, float size, Color c)
@@ -45,18 +46,18 @@ public class DrawereringTool : MonoBehaviour
         //System.DateTime.Now
         if (sectickerPos == Vector3.zero)
         {
-            sectickerPos = new Vector3(Center.x, Center.y + 25, 0);
-            mintickerPos = new Vector3(Center.x, Center.y + 30, 0);
-            houtickerPos = new Vector3(Center.x, Center.y + 35, 0);
+            sectickerPos = new Vector3(Center.x, Center.y + (size * 8), 0);
+            mintickerPos = new Vector3(Center.x, Center.y + (size * 12), 0);
+            houtickerPos = new Vector3(Center.x, Center.y + (size * 16), 0);
         }
         else
         {
             //SecondsHand
             if(Time.time >= timeCheck + ticTime)
             {
-                sectickerPos = RotatePoint(Center, -72f, sectickerPos);
-                mintickerPos = RotatePoint(Center, -14.4f, mintickerPos);
-                houtickerPos = RotatePoint(Center, -2.88f, houtickerPos);
+                sectickerPos = MT.RotatePoint(Center, -72f, sectickerPos);
+                mintickerPos = MT.RotatePoint(Center, -14.4f, mintickerPos);
+                houtickerPos = MT.RotatePoint(Center, -2.88f, houtickerPos);
                 timeCheck = Time.time;
             }
         }
@@ -72,9 +73,9 @@ public class DrawereringTool : MonoBehaviour
         {
             if (start == Vector3.zero)
             {
-                start = new Vector3(Center.x, Center.y + 25, 0);
+                start = new Vector3(Center.x, Center.y + size, 0);
             }
-            Vector3 next = RotatePoint(Center, 60f, start);
+            Vector3 next = MT.RotatePoint(Center, 60f, start);
             HexLines.Add(new Line(start, next, Color.red));
             start = next;
         }
@@ -83,6 +84,34 @@ public class DrawereringTool : MonoBehaviour
             Glint.AddCommand(l);
         }
     }
+    public void DrawCircle(Vector3 Position, float Radius, int Sides, Color color)
+    {
+        Vector3 point;
+        Vector3 lastpoint = new Vector3();
+        float num = 360 / Sides;
+        int count = 0;
+        Circle OSCircle = new Circle(grid.grid.origin, Position, Radius, Sides, 0);
+        point = new Vector3(OSCircle.Position.x, OSCircle.Position.y + Radius, 0);
+        while(count <= Sides)
+        {
+            lastpoint = MT.CircleRadiusPoint(grid.grid.origin, Position, num + (num * count++), Radius);
+            Glint.AddCommand(new Line(point, lastpoint, color));
+            point = lastpoint;
+        }
+    }
+    public static Vector3 EllipseRadiusPoint(Vector3 Origin, float angle, Vector3 Axis)
+    {
+        //(((x-h)^2)/a^2)+(((x-h)^2)/a^2)=1
+        //Like CircleRadiusPoint, but scaling using the Axis Vector2 instead of the radius.
+        return new Vector3();
+    }
+    public static void DrawEllipse(Vector3 Position, Vector2 Axis, int Sides, Color color)
+    {
+        //Draws an Ellipse, 
+        //Center of the Ellipse is Position
+        //If Sides< 3, make it something reasonable.
+    }
+
 
 
     public void GetParabolas()
@@ -129,7 +158,7 @@ public class DrawereringTool : MonoBehaviour
     {
         foreach (Line l in ParaA)
         {
-            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
         }
     }
 
@@ -162,7 +191,7 @@ public class DrawereringTool : MonoBehaviour
     {
         foreach (Line l in ParaB)
         {
-            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
         }
     }
 
@@ -195,7 +224,7 @@ public class DrawereringTool : MonoBehaviour
     {
         foreach (Line l in ParaC)
         {
-            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
         }
     }
 
@@ -213,7 +242,7 @@ public class DrawereringTool : MonoBehaviour
         Vector3 start = Vector3.zero;
         foreach (Vector3 v in Points)
         {
-            if (start == Vector3.zero)
+            if (start == Vector3.zero)                                                                                              
             {
                 start = v;
             }
@@ -228,7 +257,7 @@ public class DrawereringTool : MonoBehaviour
     {
         foreach (Line l in ParaD)
         {
-            Glint.AddCommand(new Line(grid.GridToScreen(l.start), grid.GridToScreen(l.end), l.color));
+            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
         }
     }
 
@@ -241,28 +270,5 @@ public class DrawereringTool : MonoBehaviour
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y + 50, 0), new Vector3(Center.x - 25, Center.y, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x - 25, Center.y, 0), new Vector3(Center.x, Center.y - 50, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y - 50, 0), new Vector3(Center.x + 25, Center.y, 0), Color.red));
-    }
-
-
-    public static float V3ToAngle(Vector3 startPoint, Vector3 endPoint)
-    {
-        return Mathf.Atan2(endPoint.x, endPoint.y) * 180/Mathf.PI; ;
-    }
-    public static float LineToAngle(Line line)
-    {
-        V3ToAngle(line.start, line.end);
-        return 0;
-    }
-    public static Vector3 RotatePoint(Vector3 center, float angle, Vector3 pointIN)
-    {
-        Vector3 T = new Vector3();
-        pointIN = pointIN - center;
-        T.x = pointIN.x * Mathf.Cos(Deg2Rad(angle)) - pointIN.y * Mathf.Sin(Deg2Rad(angle));
-        T.y = pointIN.x * Mathf.Sin(Deg2Rad(angle)) + pointIN.y * Mathf.Cos(Deg2Rad(angle));
-        return T + center;
-    }
-    public static float Deg2Rad(float angle)
-    {
-        return angle * Mathf.Deg2Rad;
     }
 }
