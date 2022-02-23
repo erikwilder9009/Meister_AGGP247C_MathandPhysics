@@ -164,6 +164,7 @@ public class Grid2D : MonoBehaviour
             "\nResolution = " + grid.screenSize +
             "\nOrigin = " + grid.origin +
             "\nCurser Location = " + Curser + " (" + MT.ScreenToGrid(Curser, grid) + ")" +
+            "\nMouseLocation = " + Input.mousePosition +
             "\nDivision Count = " + grid.divisionCount + 
             "\n" + Time.deltaTime;
     }
