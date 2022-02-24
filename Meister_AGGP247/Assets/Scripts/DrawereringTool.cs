@@ -99,19 +99,28 @@ public class DrawereringTool : MonoBehaviour
             point = lastpoint;
         }
     }
-    public static Vector3 EllipseRadiusPoint(Vector3 Origin, float angle, Vector3 Axis)
+
+    public void DE(Vector3 center, float radius, int sides)
     {
-        //(((x-h)^2)/a^2)+(((x-h)^2)/a^2)=1
-        //Like CircleRadiusPoint, but scaling using the Axis Vector2 instead of the radius.
-        return new Vector3();
-    }
-    public static void DrawEllipse(Vector3 Position, Vector2 Axis, int Sides, Color color)
-    {
-        //Draws an Ellipse, 
-        //Center of the Ellipse is Position
-        //If Sides< 3, make it something reasonable.
+        
+            
     }
 
+    public void DrawEllipse(Vector3 center, float radius, int sides)
+    {
+        float theta = 0;
+        float angle = 360/sides;
+        Vector3 point = MT.EllipseRadiusPoint(center, radius, 0, grid.grid);
+        Vector3 newpoint = new Vector3();
+        theta += angle;
+        while (theta <= 360)
+        {
+            newpoint = MT.EllipseRadiusPoint(center, radius, theta, grid.grid);
+            Glint.AddCommand(new Line(point, newpoint, Color.red));
+            point = newpoint;
+            theta += angle;
+        }
+    }
 
 
     public void GetParabolas()

@@ -41,8 +41,8 @@ public class Grid2D : MonoBehaviour
 
     public int originSize = 3;
 
-    bool drawCircle;
-    bool drawEllipse;
+    public bool drawCircle;
+    public bool drawEllipse;
 
     private void Start()
     {
@@ -73,6 +73,7 @@ public class Grid2D : MonoBehaviour
         }
         if(drawEllipse)
         {
+            drawerer.DrawEllipse(grid.origin, 10, 36);
         }
     }
 
@@ -178,7 +179,16 @@ public class Grid2D : MonoBehaviour
         }
         else
         {
-            grid.gridSize += Input.mouseScrollDelta.y;
+            if(grid.gridSize > grid.minGridSize)
+            {
+                grid.gridSize += Input.mouseScrollDelta.y;
+            }
+            else if (grid.gridSize <= grid.minGridSize && Input.mouseScrollDelta.y > 0)
+            {
+                grid.gridSize += Input.mouseScrollDelta.y;
+            }
+
+
         }
 
         if (Input.GetMouseButton(1))
@@ -226,8 +236,13 @@ public class Grid2D : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             drawCircle = !drawCircle;
+            drawEllipse = false;
         }
-        drawEllipse = Input.GetKeyDown(KeyCode.E);
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            drawCircle = false;
+            drawEllipse = !drawEllipse;
+        }
     }
 }
 

@@ -52,7 +52,7 @@ public class Collision : MonoBehaviour
 
         if(PointInCircle(Center, Radius, mousePoint))
         {
-            DrawC = Color.green;
+            fillCircle(Center, Radius);
         }
 
         Vector3 point;
@@ -67,6 +67,21 @@ public class Collision : MonoBehaviour
             Glint.AddCommand(new Line(point, lastpoint, DrawC));
             point = lastpoint;
         }
+    }
+    void fillCircle(Vector3 Center, float Radius)
+    {
+        int count = 0;
+        int countMax = 360;
+        float num = 360 / countMax;
+
+        Vector3 Point = new Vector3(Center.x, Center.y + Radius);
+        while (count <= countMax)
+        {
+            Glint.AddCommand(new Line(Center, Point, Color.green));
+            Point = MT.CircleRadiusPoint(Center, Point, num, Radius);
+            count++;
+        }
+
     }
     bool PointInCircle(Vector3 Center, float Radius, Vector3 Point)
     {
@@ -87,11 +102,20 @@ public class Collision : MonoBehaviour
         Vector3 C = MT.GridToScreen(new Vector3(-10, -10, 0), grid.grid);
         if (PointInTriangle(mousePoint, A, B, C))
         {
-            DrawC = Color.green;
+            fillTriangle(A, C, B);
         }
         Glint.AddCommand(new Line(A, B, DrawC));
         Glint.AddCommand(new Line(B, C, DrawC));
         Glint.AddCommand(new Line(C, A, DrawC));
+    }
+    void fillTriangle(Vector3 A, Vector3 B, Vector3 C)
+    {
+        float X = B.x;
+        while (X <= C.x)
+        {
+            Glint.AddCommand(new Line(A, new Vector3(X, B.y, 0), Color.green));
+            X++;
+        }
     }
     bool PointInTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
     {
@@ -111,12 +135,21 @@ public class Collision : MonoBehaviour
         Vector3 D = MT.GridToScreen(new Vector3(-10, -10, 0), grid.grid);
         if (PointInRectangle(mousePoint, A, B, C, D))
         {
-            DrawC = Color.green;
+            fillRectangle(A, B, C, D);
         }
         Glint.AddCommand(new Line(A, B, DrawC));
         Glint.AddCommand(new Line(B, C, DrawC));
         Glint.AddCommand(new Line(C, D, DrawC));
         Glint.AddCommand(new Line(D, A, DrawC));
+    }
+    void fillRectangle(Vector3 A, Vector3 B, Vector3 C, Vector3 D)
+    {
+        float Y = D.y;
+        while (Y <= A.y)
+        {
+            Glint.AddCommand(new Line(new Vector3(D.x, Y, 0), new Vector3(C.x, Y, 0), Color.green));
+            Y++;
+        }
     }
     bool PointInRectangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
     {

@@ -36,6 +36,13 @@ public class MathTool : MonoBehaviour
     {
         return RotatePoint(Origin, angle, Center);
     }
+    public Vector3 EllipseRadiusPoint(Vector3 center, float radius, float angle, Grid2D.Grid g)
+    {
+        Vector3 v = new Vector3();
+        v.x = (float)(center.x + (radius * g.gridSize) * Mathf.Cos(Deg2Rad(angle)));
+        v.y = (float)(center.y - 0.5 * (radius * g.gridSize) * Mathf.Sin(Deg2Rad(angle)));
+        return v;
+    }
 
 
     public static float V3ToAngle(Vector3 startPoint, Vector3 endPoint)
