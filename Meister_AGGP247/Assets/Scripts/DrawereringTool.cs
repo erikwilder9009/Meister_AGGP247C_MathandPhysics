@@ -4,43 +4,32 @@ using UnityEngine;
 
 public class DrawereringTool : MonoBehaviour
 {
-    public Grid2D grid;
+    public static Grid2D grid;
 
-    MathTool MT = new MathTool();
-
-    Vector3 start;
-    Vector3 sectickerPos;
-    Vector3 mintickerPos;
-    Vector3 houtickerPos;
-    public float ticTime = 1f;
-    float timeCheck;
-
-
-    List<Line> ParaA = new List<Line>();
-    List<Line> ParaB = new List<Line>();
-    List<Line> ParaC = new List<Line>();
-    List<Line> ParaD = new List<Line>();
-    List<Vector3> Points = new List<Vector3>();
-
-
+    static Vector3 start;
+    static Vector3 sectickerPos;
+    static Vector3 mintickerPos;
+    static Vector3 houtickerPos;
+    public static float ticTime = 1f;
+    static float timeCheck;
+    static List<Line> ParaA = new List<Line>();
+    static List<Line> ParaB = new List<Line>();
+    static List<Line> ParaC = new List<Line>();
+    static List<Line> ParaD = new List<Line>();
+    static List<Vector3> Points = new List<Vector3>();
     private void Start()
     {
         GetParabolas();
         timeCheck = Time.time;
     }
-
-
-
-    public void drawOrigin(Vector3 Center, float size, Color c)
+    public static void drawOrigin(Vector3 Center, float size, Color c)
     {
         Glint.AddCommand(new Line(new Vector3(Center.x + size, Center.y, 0), new Vector3(Center.x, Center.y + size, 0), c));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y + size, 0), new Vector3(Center.x - size, Center.y, 0), c));
         Glint.AddCommand(new Line(new Vector3(Center.x - size, Center.y, 0), new Vector3(Center.x, Center.y - size, 0), c));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y - size, 0), new Vector3(Center.x + size, Center.y, 0), c));
     }
-
-
-    public void drawTicker(Vector3 Center, float size)
+    public static void drawTicker(Vector3 Center, float size)
     {
         drawOrigin(Center, size, Color.green);
         //System.DateTime.Now
@@ -55,9 +44,9 @@ public class DrawereringTool : MonoBehaviour
             //SecondsHand
             if(Time.time >= timeCheck + ticTime)
             {
-                sectickerPos = MT.RotatePoint(Center, -72f, sectickerPos);
-                mintickerPos = MT.RotatePoint(Center, -14.4f, mintickerPos);
-                houtickerPos = MT.RotatePoint(Center, -2.88f, houtickerPos);
+                sectickerPos = MathTool.RotatePoint(Center, -72f, sectickerPos);
+                mintickerPos = MathTool.RotatePoint(Center, -14.4f, mintickerPos);
+                houtickerPos = MathTool.RotatePoint(Center, -2.88f, houtickerPos);
                 timeCheck = Time.time;
             }
         }
@@ -65,9 +54,8 @@ public class DrawereringTool : MonoBehaviour
         drawOrigin(mintickerPos, size, Color.yellow);
         drawOrigin(houtickerPos, size, Color.blue);
     }
-
-    List<Line> HexLines = new List<Line>();
-    public void drawHexagon(Vector3 Center, float size)
+    static List<Line> HexLines = new List<Line>();
+    public static void drawHexagon(Vector3 Center, float size)
     {
         while (HexLines.Count < 6)
         {
@@ -75,7 +63,7 @@ public class DrawereringTool : MonoBehaviour
             {
                 start = new Vector3(Center.x, Center.y + size, 0);
             }
-            Vector3 next = MT.RotatePoint(Center, 60f, start);
+            Vector3 next = MathTool.RotatePoint(Center, 60f, start);
             HexLines.Add(new Line(start, next, Color.red));
             start = next;
         }
@@ -84,46 +72,51 @@ public class DrawereringTool : MonoBehaviour
             Glint.AddCommand(l);
         }
     }
-    public void DrawCircle(Vector3 Position, float Radius, int Sides, Color color)
+    public static void drawCircle(int sides, float radius, Vector3 center, Color color)
     {
-        Vector3 point;
+        Vector3 Position = new Vector3(center.x, center.y + radius, 0);
         Vector3 lastpoint = new Vector3();
-        float num = 360 / Sides;
+        float num = 360 / sides;
         int count = 0;
-        Circle OSCircle = new Circle(grid.grid.origin, Position, Radius, Sides, 0);
-        point = new Vector3(OSCircle.Position.x, OSCircle.Position.y + Radius, 0);
-        while(count <= Sides)
+        Vector3 point = Position;
+        while (count <= sides)
         {
-            lastpoint = MT.CircleRadiusPoint(grid.grid.origin, Position, num + (num * count++), Radius);
+            lastpoint = MathTool.CircleRadiusPoint(center, Position, num + (num * count++), radius);
             Glint.AddCommand(new Line(point, lastpoint, color));
             point = lastpoint;
         }
     }
-
-    public void DE(Vector3 center, float radius, int sides)
+    public static void fillCircle(Vector3 Center, float Radius, Color color)
     {
-        
-            
-    }
+        int count = 0;
+        int countMax = 360;
+        float num = 360 / countMax;
 
-    public void DrawEllipse(Vector3 center, float radius, int sides)
+        Vector3 Point = new Vector3(Center.x, Center.y + Radius);
+        while (count <= countMax)
+        {
+            Glint.AddCommand(new Line(Center, Point, color));
+            Point = MathTool.CircleRadiusPoint(Center, Point, num, Radius);
+            count++;
+        }
+
+    }
+    public static void DrawEllipse(Vector3 center, float radius, int sides)
     {
         float theta = 0;
         float angle = 360/sides;
-        Vector3 point = MT.EllipseRadiusPoint(center, radius, 0, grid.grid);
+        Vector3 point = MathTool.EllipseRadiusPoint(center, radius, 0, grid.grid);
         Vector3 newpoint = new Vector3();
         theta += angle;
         while (theta <= 360)
         {
-            newpoint = MT.EllipseRadiusPoint(center, radius, theta, grid.grid);
+            newpoint = MathTool.EllipseRadiusPoint(center, radius, theta, grid.grid);
             Glint.AddCommand(new Line(point, newpoint, Color.red));
             point = newpoint;
             theta += angle;
         }
     }
-
-
-    public void GetParabolas()
+    public static void GetParabolas()
     {
         ParaA = new List<Line>();
         ParaB = new List<Line>();
@@ -138,8 +131,7 @@ public class DrawereringTool : MonoBehaviour
         Points = new List<Vector3>();
         GetParabolaD();
     }
-
-    void GetParabolaA()
+    public static void GetParabolaA()
     {
         int y = 0;
         int x = -grid.grid.divisionCount;
@@ -163,15 +155,14 @@ public class DrawereringTool : MonoBehaviour
             }
         }
     }
-    public void ParabolaA()
+    public static void ParabolaA()
     {
         foreach (Line l in ParaA)
         {
-            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
+            Glint.AddCommand(new Line(MathTool.GridToScreen(l.start, grid.grid), MathTool.GridToScreen(l.end, grid.grid), l.color));
         }
     }
-
-    void GetParabolaB()
+    public static void GetParabolaB()
     {
         float y = 0;
         float x = -grid.grid.divisionCount;
@@ -196,15 +187,14 @@ public class DrawereringTool : MonoBehaviour
             }
         }
     }
-    public void ParabolaB()
+    public static void ParabolaB()
     {
         foreach (Line l in ParaB)
         {
-            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
+            Glint.AddCommand(new Line(MathTool.GridToScreen(l.start, grid.grid), MathTool.GridToScreen(l.end, grid.grid), l.color));
         }
     }
-
-    void GetParabolaC()
+    public static void GetParabolaC()
     {
         float y = 0;
         int x = -grid.grid.divisionCount;
@@ -229,15 +219,14 @@ public class DrawereringTool : MonoBehaviour
             }
         }
     }
-    public void ParabolaC()
+    public static void ParabolaC()
     {
         foreach (Line l in ParaC)
         {
-            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
+            Glint.AddCommand(new Line(MathTool.GridToScreen(l.start, grid.grid), MathTool.GridToScreen(l.end, grid.grid), l.color));
         }
     }
-
-    void GetParabolaD()
+    public static void GetParabolaD()
     {
         float x = 0;
         int y = -grid.grid.divisionCount;
@@ -262,22 +251,105 @@ public class DrawereringTool : MonoBehaviour
             }
         }
     }
-    public void ParabolaD()
+    public static void ParabolaD()
     {
         foreach (Line l in ParaD)
         {
-            Glint.AddCommand(new Line(MT.GridToScreen(l.start, grid.grid), MT.GridToScreen(l.end, grid.grid), l.color));
+            Glint.AddCommand(new Line(MathTool.GridToScreen(l.start, grid.grid), MathTool.GridToScreen(l.end, grid.grid), l.color));
         }
     }
-
-
-
-
-    public void drawDiamond(Vector3 Center)
+    public static void drawDiamond(Vector3 Center)
     {
         Glint.AddCommand(new Line(new Vector3(Center.x + 25, Center.y, 0), new Vector3(Center.x, Center.y + 50, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y + 50, 0), new Vector3(Center.x - 25, Center.y, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x - 25, Center.y, 0), new Vector3(Center.x, Center.y - 50, 0), Color.red));
         Glint.AddCommand(new Line(new Vector3(Center.x, Center.y - 50, 0), new Vector3(Center.x + 25, Center.y, 0), Color.red));
+    }
+    public static void DrawShip(Vector3 location, float Rotation)
+    {
+        Glint.AddCommand(new Line(MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x + 20, location.y - 15, 0)), MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x, location.y + 25, 0)), Color.red));
+        Glint.AddCommand(new Line(MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x, location.y + 25, 0)), MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x - 20, location.y - 15, 0)), Color.red));
+        Glint.AddCommand(new Line(MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x - 20, location.y - 15, 0)), MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x, location.y, 0)), Color.red));
+        Glint.AddCommand(new Line(MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x, location.y, 0)), MathTool.RotatePoint(location, Rotation - 90, new Vector3(location.x + 20, location.y - 15, 0)), Color.red));
+    }
+    public static void DrawEscape(Vector3 screenSize)
+    {
+        Color DrawC = Color.red;
+        Vector3 A = new Vector3(screenSize.x - 50, screenSize.y - 10);
+        Vector3 B = new Vector3(screenSize.x - 10, screenSize.y - 10);
+        Vector3 C = new Vector3(screenSize.x - 10, screenSize.y - 50);
+        Vector3 D = new Vector3(screenSize.x - 50, screenSize.y - 50);
+        if (MathTool.PointInRectangle(Input.mousePosition, A, B, C, D))
+        {
+            fillRectangle(A, B, C, D, Color.green);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Menu.LoadMenu();
+            }
+        }
+        Glint.AddCommand(new Line(A, B, DrawC));
+        Glint.AddCommand(new Line(B, C, DrawC));
+        Glint.AddCommand(new Line(C, D, DrawC));
+        Glint.AddCommand(new Line(D, A, DrawC));
+        Glint.AddCommand(new Line(A, C, DrawC));
+        Glint.AddCommand(new Line(B, D, DrawC));
+    }
+    public static void drawGaugebar(float percentFull, Color color)
+    {
+        Vector3 A = new Vector3(0, 0);
+        Vector3 B = new Vector3(0, 20);
+        Vector3 C = new Vector3(500, 20);
+        Vector3 D = new Vector3(500, 0);
+        Glint.AddCommand(new Line(A, B, color));
+        Glint.AddCommand(new Line(B, C, color));
+        Glint.AddCommand(new Line(C, D, color));
+        Glint.AddCommand(new Line(D, A, color));
+
+        int x = 0;
+        while (x < percentFull * 5)
+        {
+            Glint.AddCommand(new Line(new Vector3(x, 0), new Vector3(x, 20), color));
+            x++;
+        }
+    }
+    public static void drawTriangle(Vector3 A, Vector3 B, Vector3 C, Color color)
+    {
+        Glint.AddCommand(new Line(A, B, color));
+        Glint.AddCommand(new Line(B, C, color));
+        Glint.AddCommand(new Line(C, A, color));
+    }
+    public static void fillTriangle(Vector3 A, Vector3 B, Vector3 C, Color color)
+    {
+        float X = B.x;
+        while (X <= C.x)
+        {
+            Glint.AddCommand(new Line(A, new Vector3(X, B.y, 0), color));
+            X++;
+        }
+    }
+    public static void drawRectangle(Vector3 A, Vector3 B, Vector3 C, Vector3 D, Color color)
+    {
+        Glint.AddCommand(new Line(A, B, color));
+        Glint.AddCommand(new Line(B, C, color));
+        Glint.AddCommand(new Line(C, D, color));
+        Glint.AddCommand(new Line(D, A, color));
+    }
+    public static void fillRectangle(Vector3 A, Vector3 B, Vector3 C, Vector3 D, Color color)
+    {
+        float Y = D.y;
+        while (Y <= A.y)
+        {
+            Glint.AddCommand(new Line(new Vector3(D.x, Y, 0), new Vector3(C.x, Y, 0), color));
+            Y++;
+        }
+    }
+    public static void fillRectangle(Vector3 A, Vector3 B, Vector3 C, Vector3 D, Color color, Vector3 rotPoint, float rotation)
+    {
+        float Y = D.y;
+        while (Y <= A.y)
+        {
+            Glint.AddCommand(new Line(MathTool.RotatePoint(rotPoint, rotation, new Vector3(D.x, Y, 0)), MathTool.RotatePoint(rotPoint, rotation, new Vector3(C.x, Y, 0)), Color.red));
+            Y++;
+        }
     }
 }

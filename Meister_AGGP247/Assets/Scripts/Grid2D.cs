@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class Grid2D : MonoBehaviour
 {
-    public DrawereringTool drawerer;
-    MathTool MT = new MathTool();
 
     public class Grid
     {
@@ -69,11 +67,27 @@ public class Grid2D : MonoBehaviour
         }
         if(drawCircle)
         {
-            drawerer.DrawCircle(Curser, 1, 32, Color.red);
+            DrawCircle(Curser, 1, 32, Color.red);
         }
         if(drawEllipse)
         {
-            drawerer.DrawEllipse(grid.origin, 10, 36);
+            DrawereringTool.DrawEllipse(grid.origin, 10, 36);
+        }
+    }
+    //Special version to work with Curser
+    public void DrawCircle(Vector3 Position, float Radius, int Sides, Color color)
+    {
+        Vector3 point;
+        Vector3 lastpoint = new Vector3();
+        float num = 360 / Sides;
+        int count = 0;
+        Circle OSCircle = new Circle(grid.origin, Position, Radius, Sides, 0);
+        point = new Vector3(OSCircle.Position.x, OSCircle.Position.y + Radius, 0);
+        while (count <= Sides)
+        {
+            lastpoint = MathTool.CircleRadiusPoint(grid.origin, Position, num + (num * count++), Radius);
+            Glint.AddCommand(new Line(point, lastpoint, color));
+            point = lastpoint;
         }
     }
 
@@ -88,35 +102,35 @@ public class Grid2D : MonoBehaviour
     {
         if(type == 1)
         {
-            drawerer.drawOrigin(drawPoint, size, Color.red);
+            DrawereringTool.drawOrigin(drawPoint, size, Color.red);
         }
         if(type == 2)
         {
-            drawerer.drawTicker(drawPoint, size);
+            DrawereringTool.drawTicker(drawPoint, size);
         }
         if (type == 3)
         {
-            drawerer.drawHexagon(drawPoint, size);
+            DrawereringTool.drawHexagon(drawPoint, size);
         }
         if (type == 4)
         {
-            drawerer.ParabolaA();
+            DrawereringTool.ParabolaA();
         }
         if (type == 5)
         {
-            drawerer.ParabolaB();
+            DrawereringTool.ParabolaB();
         }
         if (type == 6)
         {
-            drawerer.ParabolaC();
+            DrawereringTool.ParabolaC();
         }
         if (type == 7)
         {
-            drawerer.ParabolaD();
+            DrawereringTool.ParabolaD();
         }
         if (type == 8)
         {
-            drawerer.drawDiamond(drawPoint);
+            DrawereringTool.drawDiamond(drawPoint);
         }
     }
     public void drawCurser(Vector3 Curser)
@@ -164,7 +178,7 @@ public class Grid2D : MonoBehaviour
         gridData.text = "T:(1024x768)" +
             "\nResolution = " + grid.screenSize +
             "\nOrigin = " + grid.origin +
-            "\nCurser Location = " + Curser + " (" + MT.ScreenToGrid(Curser, grid) + ")" +
+            "\nCurser Location = " + Curser + " (" + MathTool.ScreenToGrid(Curser, grid) + ")" +
             "\nMouseLocation = " + Input.mousePosition +
             "\nDivision Count = " + grid.divisionCount + 
             "\n" + Time.deltaTime;
@@ -174,7 +188,7 @@ public class Grid2D : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.LeftControl)) 
         {
-            drawerer.GetParabolas();
+            DrawereringTool.GetParabolas();
             grid.divisionCount += (int)Mathf.Round(Input.mouseScrollDelta.y);
         }
         else
