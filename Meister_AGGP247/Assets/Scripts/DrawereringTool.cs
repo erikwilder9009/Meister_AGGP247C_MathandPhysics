@@ -42,7 +42,7 @@ public class DrawereringTool : MonoBehaviour
         else
         {
             //SecondsHand
-            if(Time.time >= timeCheck + ticTime)
+            if (Time.time >= timeCheck + ticTime)
             {
                 sectickerPos = MathTool.RotatePoint(Center, -72f, sectickerPos);
                 mintickerPos = MathTool.RotatePoint(Center, -14.4f, mintickerPos);
@@ -67,7 +67,7 @@ public class DrawereringTool : MonoBehaviour
             HexLines.Add(new Line(start, next, Color.red));
             start = next;
         }
-        foreach(Line l in HexLines)
+        foreach (Line l in HexLines)
         {
             Glint.AddCommand(l);
         }
@@ -104,7 +104,7 @@ public class DrawereringTool : MonoBehaviour
     public static void DrawEllipse(Vector3 center, float radius, int sides)
     {
         float theta = 0;
-        float angle = 360/sides;
+        float angle = 360 / sides;
         Vector3 point = MathTool.EllipseRadiusPoint(center, radius, 0, grid.grid);
         Vector3 newpoint = new Vector3();
         theta += angle;
@@ -240,7 +240,7 @@ public class DrawereringTool : MonoBehaviour
         Vector3 start = Vector3.zero;
         foreach (Vector3 v in Points)
         {
-            if (start == Vector3.zero)                                                                                              
+            if (start == Vector3.zero)
             {
                 start = v;
             }
@@ -327,12 +327,29 @@ public class DrawereringTool : MonoBehaviour
             X++;
         }
     }
+    public static void drawRectangle(Vector3 A, Vector3 C, Color color)
+    {
+        Glint.AddCommand(new Line(A, new Vector3(A.x, C.y, 0), color));
+        Glint.AddCommand(new Line(new Vector3(A.x, C.y, 0), C, color));
+        Glint.AddCommand(new Line(C, new Vector3(C.x, A.y, 0), color));
+        Glint.AddCommand(new Line(new Vector3(C.x, A.y, 0), A, color));
+    }
     public static void drawRectangle(Vector3 A, Vector3 B, Vector3 C, Vector3 D, Color color)
     {
         Glint.AddCommand(new Line(A, B, color));
         Glint.AddCommand(new Line(B, C, color));
         Glint.AddCommand(new Line(C, D, color));
         Glint.AddCommand(new Line(D, A, color));
+    }
+    public static void fillRectangle(Vector3 A, Vector3 C, Color color)
+    {
+        Vector3 D = new Vector3(A.x, C.y, 0);
+        float Y = D.y;
+        while (Y <= A.y)
+        {
+            Glint.AddCommand(new Line(new Vector3(D.x, Y, 0), new Vector3(C.x, Y, 0), color));
+            Y++;
+        }
     }
     public static void fillRectangle(Vector3 A, Vector3 B, Vector3 C, Vector3 D, Color color)
     {
@@ -351,5 +368,10 @@ public class DrawereringTool : MonoBehaviour
             Glint.AddCommand(new Line(MathTool.RotatePoint(rotPoint, rotation, new Vector3(D.x, Y, 0)), MathTool.RotatePoint(rotPoint, rotation, new Vector3(C.x, Y, 0)), Color.red));
             Y++;
         }
+    }
+
+    public static void drawLine(Vector3 A, Vector3 B, Color color)
+    {
+        Glint.AddCommand(new Line(A, B, color));
     }
 }
