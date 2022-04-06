@@ -312,6 +312,7 @@ public class DrawereringTool : MonoBehaviour
             x++;
         }
     }
+
     public static void drawTriangle(Vector3 A, Vector3 B, Vector3 C, Color color)
     {
         Glint.AddCommand(new Line(A, B, color));

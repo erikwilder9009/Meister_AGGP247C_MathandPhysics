@@ -4,23 +4,28 @@ using UnityEngine;
 
 public class SCCanvas : MonoBehaviour
 {
-    public class Canvas
+    public class Scene
     {
         public Vector3 screenSize;
         public Vector3 origin;
+        public float groundY;
 
         public float Zoom = 1f;
         public float minZoom = .1f;
         public float maxZoom = 2f;
     }
     public bool isDrawingOrigin = false;
-    public Canvas canvas = new Canvas();
+    public Scene canvas = new Scene();
+
+    public bool run;
 
     // Start is called before the first frame update
     void Start()
     {
+        run = false;
         canvas.screenSize = new Vector3(Screen.width, Screen.height);
         canvas.origin = new Vector3(Screen.width / 2, Screen.height / 2);
+        run = true;
     }
 
     // Update is called once per frame
@@ -29,8 +34,9 @@ public class SCCanvas : MonoBehaviour
         getInputs();
         if (isDrawingOrigin)
         {
-            DrawereringTool.drawOrigin(canvas.origin, 20f, Color.red);
+            DrawereringTool.drawOrigin(canvas.origin, 2, Color.red);
         }
+
         drawScene();
     }
 
@@ -41,7 +47,8 @@ public class SCCanvas : MonoBehaviour
         DrawereringTool.drawRectangle(frameA, frameB, Color.yellow);
 
         Vector3 groundA = new Vector3((canvas.origin.x - (canvas.screenSize.x / 2) * canvas.Zoom) + 1, (canvas.origin.y - (canvas.screenSize.y / 2) * canvas.Zoom) + 1, 0);
-        Vector3 groundB = new Vector3((canvas.origin.x + (canvas.screenSize.x / 2) * canvas.Zoom) - 1, (canvas.origin.y + ((canvas.screenSize.y / 2) - canvas.screenSize.y * .75f) * canvas.Zoom) - 1, 0);
+        Vector3 groundB = new Vector3((canvas.origin.x + (canvas.screenSize.x / 2) * canvas.Zoom) - 1, (canvas.origin.y + ((canvas.screenSize.y / 2) - canvas.screenSize.y * .9f) * canvas.Zoom) - 1, 0);
+        canvas.groundY = groundB.y;
         DrawereringTool.drawRectangle(groundA, groundB, Color.green);
         DrawereringTool.fillRectangle(groundB, groundA, Color.green);
     }

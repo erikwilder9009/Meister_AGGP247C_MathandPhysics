@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\DrawereringTool.cs" />
     <Compile Include="Assets\Glint\Glint.cs" />
+    <Compile Include="Assets\Scripts\Scorched Earth\SCCanvas.cs" />
     <Compile Include="Assets\Scripts\Shapes\Line.cs" />
     <Compile Include="Assets\Scripts\Scorched Earth\Tank.cs" />
     <Compile Include="Assets\Scripts\MathTool.cs" />
@@ -73,7 +74,10 @@
     <Compile Include="Assets\Scripts\Ellipse.cs" />
     <Compile Include="Assets\Scripts\Grid2D.cs" />
     <Compile Include="Assets\Scripts\ShipGame\Ship.cs" />
-    <Compile Include="Assets\Scripts\Scorched Earth\SCCanvas.cs" />
+    <Compile Include="Assets\Scripts\Scorched Earth\SCManager.cs" />
+    <Compile Include="Assets\Scripts\Scorched Earth\InputManager.cs" />
+    <Compile Include="Assets\Scripts\Scorched Earth\Wall.cs" />
+    <Compile Include="Assets\Scripts\Scorched Earth\Projectile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Glint\VertexColor.shader" />
