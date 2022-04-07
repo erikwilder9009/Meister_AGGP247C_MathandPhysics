@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SCCanvas : MonoBehaviour
 {
+    public static SCCanvas instance;
+
     public class Scene
     {
         public Vector3 screenSize;
@@ -13,6 +15,9 @@ public class SCCanvas : MonoBehaviour
         public float Zoom = 1f;
         public float minZoom = .1f;
         public float maxZoom = 2f;
+
+        public Vector3 frameA;
+        public Vector3 frameB;
     }
     public bool isDrawingOrigin = false;
     public Scene canvas = new Scene();
@@ -26,6 +31,17 @@ public class SCCanvas : MonoBehaviour
         canvas.screenSize = new Vector3(Screen.width, Screen.height);
         canvas.origin = new Vector3(Screen.width / 2, Screen.height / 2);
         run = true;
+    }
+    void Awake()
+    {
+        if(instance)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
     }
 
     // Update is called once per frame
@@ -42,9 +58,9 @@ public class SCCanvas : MonoBehaviour
 
     void drawScene()
     {
-        Vector3 frameA = new Vector3(canvas.origin.x - (canvas.screenSize.x / 2) * canvas.Zoom, canvas.origin.y - (canvas.screenSize.y / 2) * canvas.Zoom, 0);
-        Vector3 frameB = new Vector3(canvas.origin.x + (canvas.screenSize.x / 2) * canvas.Zoom, canvas.origin.y + (canvas.screenSize.y / 2) * canvas.Zoom, 0);
-        DrawereringTool.drawRectangle(frameA, frameB, Color.yellow);
+        canvas.frameA = new Vector3(canvas.origin.x - (canvas.screenSize.x / 2) * canvas.Zoom, canvas.origin.y - (canvas.screenSize.y / 2) * canvas.Zoom, 0);
+        canvas.frameB = new Vector3(canvas.origin.x + (canvas.screenSize.x / 2) * canvas.Zoom, canvas.origin.y + (canvas.screenSize.y / 2) * canvas.Zoom, 0);
+        DrawereringTool.drawRectangle(canvas.frameA, canvas.frameB, Color.yellow);
 
         Vector3 groundA = new Vector3((canvas.origin.x - (canvas.screenSize.x / 2) * canvas.Zoom) + 1, (canvas.origin.y - (canvas.screenSize.y / 2) * canvas.Zoom) + 1, 0);
         Vector3 groundB = new Vector3((canvas.origin.x + (canvas.screenSize.x / 2) * canvas.Zoom) - 1, (canvas.origin.y + ((canvas.screenSize.y / 2) - canvas.screenSize.y * .9f) * canvas.Zoom) - 1, 0);
@@ -66,6 +82,12 @@ public class SCCanvas : MonoBehaviour
         {
             isDrawingOrigin = !isDrawingOrigin;
         }
+    }
+
+
+    public Vector3 GridToScreen(Vector3 gridSpace)
+    {
+        return (gridSpace * canvas.Zoom) + canvas.origin;
     }
 }
 

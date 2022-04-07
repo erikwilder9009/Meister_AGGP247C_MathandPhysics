@@ -4,31 +4,49 @@ using UnityEngine;
 
 public class SCManager : MonoBehaviour
 {
-    SCCanvas canvas;
+    public static SCManager instance;
+
+    SCCanvas.Scene canvas;
+
     Tank tankA;
     Tank tankB;
     bool loaded;
-    // Start is called before the first frame update
-    void Start()
+
+    public bool loadWall;
+    Wall wall;
+
+    void Awake()
     {
-        canvas = gameObject.AddComponent<SCCanvas>();
+        instance = this;
+        gameObject.AddComponent<SCCanvas>();
+        canvas = SCCanvas.instance.canvas;
+        if(loadWall)
+        {
+            wall = gameObject.AddComponent<Wall>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(canvas.run && !loaded)
+        if(SCCanvas.instance.run && !loaded)
         {
             tankA = gameObject.AddComponent<Tank>();
-            tankA.move = new Vector3(75, canvas.canvas.groundY);
+            tankA.Position = new Vector3(-450, canvas.groundY);
             tankA.player1 = true;
             tankA.myTurn = true;
             tankB = gameObject.AddComponent<Tank>();
-            tankB.move = new Vector3(canvas.canvas.screenSize.x - 75, canvas.canvas.groundY);
+            tankB.Position = new Vector3(450, canvas.groundY);
             tankB.Rotation = 180;
             tankB.player1 = false;
             tankB.myTurn = false;
             loaded = true;
         }
+    }
+
+    public void EndTurn()
+    {
+        tankA.myTurn = !tankA.myTurn;
+        tankB.myTurn = !tankB.myTurn;
     }
 }

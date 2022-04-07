@@ -312,6 +312,19 @@ public class DrawereringTool : MonoBehaviour
             x++;
         }
     }
+    public static void drawPowerbar(Vector3 TankPos, float percentFull, Color color, SCCanvas.Scene canvas)
+    {
+        Vector3 A = new Vector3(canvas.origin.x + (TankPos.x - 50) * canvas.Zoom, canvas.origin.y - (50 * canvas.Zoom), 0);
+        Vector3 C = new Vector3(canvas.origin.x + (TankPos.x + 50) * canvas.Zoom, canvas.origin.y - (70 * canvas.Zoom), 0);
+        drawRectangle(A, C, color);
+
+        float x = Mathf.RoundToInt(A.x);
+        while (x < ((C.x / 100) * percentFull))
+        {
+            DrawereringTool.fillRectangle(A, new Vector3(x, C.y), color);
+            x += 1 * canvas.Zoom;
+        }
+    }
 
     public static void drawTriangle(Vector3 A, Vector3 B, Vector3 C, Color color)
     {
