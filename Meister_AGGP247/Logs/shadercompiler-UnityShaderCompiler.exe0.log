@@ -1,4 +1,7 @@
 Base path: 'C:/Program Files/Unity/Hub/Editor/2020.3.15f2/Editor/Data', plugins path 'C:/Program Files/Unity/Hub/Editor/2020.3.15f2/Editor/Data/PlaybackEngines'
 Cmd: initializeCompiler
 
+<<<<<<< HEAD
 Cmd: shutdown
+=======
+>>>>>>> parent of b593d57 (wall + powerbar)

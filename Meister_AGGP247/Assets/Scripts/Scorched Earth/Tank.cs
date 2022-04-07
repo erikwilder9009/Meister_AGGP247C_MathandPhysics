@@ -7,11 +7,12 @@ public class Tank : MonoBehaviour
     SCCanvas.Scene canvas;
     public float Rotation;
     float Power;
-    public Vector3 Position;
+    public Vector3 move;
+    Vector3 Position;
     Vector3 barLoc; //Location of bullet spawn on barrel (barrelLocation)
     static float Gravity = 9.8f;
-    public bool Tracing = false; //shows path of bullet
-    public bool Targeting = false; //shows point of impact
+    public bool Tracing = true; //shows path of bullet
+    public bool Targeting = true; //shows point of impact
     List<Vector3> pathpoints;
     CanonBall cb;
     bool mode = false; //true for movement, false for shooting
@@ -27,7 +28,7 @@ public class Tank : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        canvas = SCCanvas.instance.canvas;
+        canvas = GetComponent<SCCanvas>().canvas;
         drawTank();
         if (myTurn)
         {
@@ -36,7 +37,6 @@ public class Tank : MonoBehaviour
             if (Fire)
             {
                 spawnProjectile();
-                SCManager.instance.EndTurn();
             }
         }
 
@@ -48,7 +48,6 @@ public class Tank : MonoBehaviour
             cb = gameObject.AddComponent(typeof(CanonBall)) as CanonBall;
         }
         cb.newCB(pathpoints);
-        Fire = false;
     }
     void drawPath()
     {
@@ -92,11 +91,11 @@ public class Tank : MonoBehaviour
         {
             if(Input.GetKey(KeyCode.A))
             {
-                Position.x -= .25f * canvas.Zoom;
+                move.x -= .25f * canvas.Zoom;
             }
             if (Input.GetKey(KeyCode.D))
             {
-                Position.x += .25f * canvas.Zoom;
+                move.x += .25f * canvas.Zoom;
             }
         }
         else
@@ -142,42 +141,25 @@ public class Tank : MonoBehaviour
             }
         }
     }
-
     void drawTank()
     {
-        Color tankColor;
-        Color wheelColor;
-        if(player1)
+        if(myTurn)
         {
-            tankColor = Color.blue;
-            wheelColor = Color.red;
-        }
-        else
-        {
-            tankColor = Color.red;
-            wheelColor = Color.blue;
+            if (mode) { DrawereringTool.drawOrigin(new Vector3(Position.x, canvas.origin.x + 50 * canvas.Zoom, 0), 20, Color.blue); }
+            else { DrawereringTool.drawOrigin(new Vector3(Position.x, canvas.origin.x + 50 * canvas.Zoom, 0), 20, Color.red); }
         }
 
-        float xzoomed = canvas.origin.x + Position.x * canvas.Zoom;
+        Vector3 BodyA = new Vector3(Position.x - (20 * canvas.Zoom), canvas.groundY + (30 * canvas.Zoom), 0);
+        Vector3 BodyB = new Vector3(Position.x + (20 * canvas.Zoom), canvas.groundY + (30 * canvas.Zoom), 0);
+        Vector3 BodyC = new Vector3(Position.x + (30 * canvas.Zoom), canvas.groundY + (10 * canvas.Zoom), 0); 
+        Vector3 BodyD = new Vector3(Position.x - (30 * canvas.Zoom), canvas.groundY + (10 * canvas.Zoom), 0);
+        DrawereringTool.drawRectangle(BodyA, BodyB, BodyC, BodyD, Color.red);
 
-        if (myTurn)
-        {
-            DrawereringTool.drawPowerbar(Position, Power, Color.yellow, canvas);
-            if (mode) { DrawereringTool.drawOrigin(new Vector3(xzoomed, canvas.origin.y, 0), 20 * canvas.Zoom, Color.blue); }
-            else { DrawereringTool.drawOrigin(new Vector3(xzoomed, canvas.origin.y, 0), 20 * canvas.Zoom, Color.red); }
-        }
-
-        Vector3 BodyA = new Vector3(xzoomed - (20 * canvas.Zoom), canvas.groundY + (30 * canvas.Zoom), 0);
-        Vector3 BodyB = new Vector3(xzoomed + (20 * canvas.Zoom), canvas.groundY + (30 * canvas.Zoom), 0);
-        Vector3 BodyC = new Vector3(xzoomed + (30 * canvas.Zoom), canvas.groundY + (10 * canvas.Zoom), 0); 
-        Vector3 BodyD = new Vector3(xzoomed - (30 * canvas.Zoom), canvas.groundY + (10 * canvas.Zoom), 0);
-        DrawereringTool.drawRectangle(BodyA, BodyB, BodyC, BodyD, tankColor);
-
-        Vector3 headA = new Vector3(xzoomed - (7 * canvas.Zoom), BodyA.y + (10 * canvas.Zoom)); 
-        Vector3 headB = new Vector3(xzoomed + (7 * canvas.Zoom), BodyA.y + (10 * canvas.Zoom));
-        Vector3 headC = new Vector3(xzoomed + (12 * canvas.Zoom), BodyA.y);
-        Vector3 headD = new Vector3(xzoomed - (12 * canvas.Zoom), BodyA.y);
-        DrawereringTool.drawRectangle(headA, headB, headC, headD, tankColor);
+        Vector3 headA = new Vector3(Position.x - (7 * canvas.Zoom), BodyA.y + (10 * canvas.Zoom)); 
+        Vector3 headB = new Vector3(Position.x + (7 * canvas.Zoom), BodyA.y + (10 * canvas.Zoom));
+        Vector3 headC = new Vector3(Position.x + (12 * canvas.Zoom), BodyA.y);
+        Vector3 headD = new Vector3(Position.x - (12 * canvas.Zoom), BodyA.y);
+        DrawereringTool.drawRectangle(headA, headB, headC, headD, Color.red);
 
         Vector3 rotationpoint = (headA + headB + headC + headD) / 4;
         Vector3 barA = MathTool.RotatePoint(rotationpoint, Rotation, new Vector3(rotationpoint.x, rotationpoint.y + (2.5f * canvas.Zoom), 0));
@@ -185,12 +167,12 @@ public class Tank : MonoBehaviour
         Vector3 barC = MathTool.RotatePoint(rotationpoint, Rotation, new Vector3(rotationpoint.x + (30 * canvas.Zoom), rotationpoint.y - (2.5f * canvas.Zoom), 0));
         Vector3 barD = MathTool.RotatePoint(rotationpoint, Rotation, new Vector3(rotationpoint.x, rotationpoint.y - (2.5f * canvas.Zoom), 0));
         barLoc = new Vector3((barB.x + barC.x) / 2, (barB.y + barC.y) / 2);
-        DrawereringTool.drawRectangle(barA, barB, barC, barD, tankColor);
+        DrawereringTool.drawRectangle(barA, barB, barC, barD, Color.red);
 
         Vector3 WheelA = new Vector3(BodyD.x + (5 * canvas.Zoom), BodyD.y + (2.5f * canvas.Zoom));
         Vector3 WheelB = new Vector3(BodyC.x - (5 * canvas.Zoom), BodyC.y + (2.5f * canvas.Zoom));
         float rad = 10 * canvas.Zoom;
-        DrawereringTool.drawCircle(16, rad, WheelA, wheelColor);
-        DrawereringTool.drawCircle(16, rad, WheelB, wheelColor);
+        DrawereringTool.drawCircle(16, rad, WheelA, Color.blue);
+        DrawereringTool.drawCircle(16, rad, WheelB, Color.blue);
     }
 }
