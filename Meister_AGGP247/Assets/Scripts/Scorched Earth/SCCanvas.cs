@@ -28,7 +28,7 @@ public class SCCanvas : MonoBehaviour
     void Start()
     {
         run = false;
-        canvas.screenSize = new Vector3(Screen.width, Screen.height);
+        canvas.screenSize = new Vector3(1024, 768);
         canvas.origin = new Vector3(Screen.width / 2, Screen.height / 2);
         run = true;
     }

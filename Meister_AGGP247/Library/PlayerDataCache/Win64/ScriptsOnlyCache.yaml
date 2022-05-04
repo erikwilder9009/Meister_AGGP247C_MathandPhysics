@@ -1,19 +1,25 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
-    - Canon
     - Glint
-    - Menu
-    - Ship
-    - ShipManger
+    - Popup
+    - SCManager
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
+    UnityEngine.UI.dll:
+    - UnityEngine.EventSystems.EventSystem
+    - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.Button
+    - UnityEngine.UI.CanvasScaler
+    - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.Image
+    - UnityEngine.UI.Text
   sceneClasses:
-    Assets/Scenes/Cannon.unity:
+    Assets/Scenes/Scorched Earth.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -33,74 +39,40 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 1480}
+    - Class: 114
       Script: {instanceID: 1836}
     - Class: 114
-      Script: {instanceID: 2448}
+      Script: {instanceID: 1962}
+    - Class: 114
+      Script: {instanceID: 2150}
+    - Class: 114
+      Script: {instanceID: 2246}
+    - Class: 114
+      Script: {instanceID: 2346}
+    - Class: 114
+      Script: {instanceID: 2494}
+    - Class: 114
+      Script: {instanceID: 2648}
+    - Class: 114
+      Script: {instanceID: 2676}
+    - Class: 114
+      Script: {instanceID: 2754}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
       Script: {instanceID: 0}
-    Assets/Scenes/Menu.unity:
-    - Class: 1
+    - Class: 213
       Script: {instanceID: 0}
-    - Class: 4
+    - Class: 222
       Script: {instanceID: 0}
-    - Class: 20
+    - Class: 223
       Script: {instanceID: 0}
-    - Class: 21
-      Script: {instanceID: 0}
-    - Class: 28
-      Script: {instanceID: 0}
-    - Class: 48
-      Script: {instanceID: 0}
-    - Class: 81
-      Script: {instanceID: 0}
-    - Class: 89
-      Script: {instanceID: 0}
-    - Class: 104
-      Script: {instanceID: 0}
-    - Class: 114
-      Script: {instanceID: 1836}
-    - Class: 114
-      Script: {instanceID: 3014}
-    - Class: 115
-      Script: {instanceID: 0}
-    - Class: 157
-      Script: {instanceID: 0}
-    - Class: 196
-      Script: {instanceID: 0}
-    Assets/Scenes/SpaceShip.unity:
-    - Class: 1
-      Script: {instanceID: 0}
-    - Class: 4
-      Script: {instanceID: 0}
-    - Class: 20
-      Script: {instanceID: 0}
-    - Class: 21
-      Script: {instanceID: 0}
-    - Class: 28
-      Script: {instanceID: 0}
-    - Class: 48
-      Script: {instanceID: 0}
-    - Class: 81
-      Script: {instanceID: 0}
-    - Class: 89
-      Script: {instanceID: 0}
-    - Class: 104
-      Script: {instanceID: 0}
-    - Class: 114
-      Script: {instanceID: 1836}
-    - Class: 114
-      Script: {instanceID: 3154}
-    - Class: 114
-      Script: {instanceID: 3706}
-    - Class: 115
-      Script: {instanceID: 0}
-    - Class: 157
-      Script: {instanceID: 0}
-    - Class: 196
+    - Class: 224
       Script: {instanceID: 0}
   scriptHashData:
   - hash:
@@ -183,7 +155,7 @@ ScriptsOnlyBuild:
     className: Glint
   - hash:
       serializedVersion: 2
-      Hash: bedd103ba30b15bf10544b4a7fd5c3c7
+      Hash: 49d9759363286125d32c646f71e6cd5e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SCCanvas
@@ -193,6 +165,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: GroupTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 171fbb55153dba0ea9502ff580344f6d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Wall
   - hash:
       serializedVersion: 2
       Hash: 800c50acba124432abb4cf0d47202e06
@@ -213,7 +191,7 @@ ScriptsOnlyBuild:
     className: PlaymodeTestsController
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 1a35b7d385283a72817fc245bed7a8ec
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Tank
@@ -229,6 +207,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MathTool
+  - hash:
+      serializedVersion: 2
+      Hash: 4b2055f7d8704254dccd3520e8536fbb
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SCManager
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -321,6 +305,12 @@ ScriptsOnlyBuild:
     className: TestResultRendererCallback
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Popup
+  - hash:
+      serializedVersion: 2
       Hash: 748dd2a2a28da4e618912da5ac45684b
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -379,6 +369,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Collision
+  - hash:
+      serializedVersion: 2
+      Hash: 50b55a21ace114f5d076f2668d9c108d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Projectile
   - hash:
       serializedVersion: 2
       Hash: 8aa3d6ccbcb54ee8db6c1229854adaaa
@@ -579,6 +575,12 @@ ScriptsOnlyBuild:
     className: TMP_ScrollbarEventHandler
   - hash:
       serializedVersion: 2
+      Hash: 443bf42d461c43901754562c8bfa9afe
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Curser
+  - hash:
+      serializedVersion: 2
       Hash: 8220b46879dc5e37db1b940c938f5744
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -603,8 +605,6 @@ ScriptsOnlyBuild:
     className: TouchInputModule
   platform: 19
   scenePathNames:
-  - Assets/Scenes/Menu.unity
-  - Assets/Scenes/Cannon.unity
-  - Assets/Scenes/SpaceShip.unity
-  playerPath: C:/Users/Reuben/Desktop/NHTI_22/Meister_AGGP247C_MathandPhysics/Builds/Lab
-    5/Meister_AGGP247.exe
+  - Assets/Scenes/Scorched Earth.unity
+  playerPath: C:/Users/Reuben/Desktop/NHTI_22/Meister_AGGP247C_MathandPhysics/Builds/Final
+    Build/Meister_AGGP247.exe

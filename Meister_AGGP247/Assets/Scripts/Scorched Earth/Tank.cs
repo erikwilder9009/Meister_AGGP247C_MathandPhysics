@@ -10,19 +10,24 @@ public class Tank : MonoBehaviour
     public Vector3 Position;
     Vector3 barLoc; //Location of bullet spawn on barrel (barrelLocation)
     static float Gravity = 9.8f;
-    public bool Tracing = false; //shows path of bullet
-    public bool Targeting = false; //shows point of impact
+    public bool Tracing; //shows path of bullet
+    public bool Targeting; //shows point of impact
     List<Vector3> pathpoints;
-    CanonBall cb;
+    Projectile cb;
     bool mode = false; //true for movement, false for shooting
-    bool Fire;
+    public bool Fire;
 
-    public bool player1;
+    public int playerNum;
     public bool myTurn;
+    public bool drawHitbox;
+
+    public Vector3 HBtopLeft;
+    public Vector3 HBbottomRight;
+
     // Start is called before the first frame update
     void Start()
     {
-        Power = 0;
+        Power = 50;
     }
     // Update is called once per frame
     void Update()
@@ -31,13 +36,13 @@ public class Tank : MonoBehaviour
         drawTank();
         if (myTurn)
         {
-            GetInputs(); 
-            drawPath();
             if (Fire)
             {
                 spawnProjectile();
                 SCManager.instance.EndTurn();
             }
+            GetInputs();
+            drawPath();
         }
 
     }
@@ -45,16 +50,16 @@ public class Tank : MonoBehaviour
     {
         if (cb == null)
         {
-            cb = gameObject.AddComponent(typeof(CanonBall)) as CanonBall;
+            cb = gameObject.AddComponent(typeof(Projectile)) as Projectile;
         }
-        cb.newCB(pathpoints);
-        Fire = false;
+        cb.newCB(pathpoints, playerNum);
+        cb.hit = false;
     }
     void drawPath()
     {
         pathpoints = new List<Vector3>();
-        float h = barLoc.y;
-        float t = 0;
+        float h = barLoc.y; //height
+        float t = 0; //time
         while (h > canvas.groundY)
         {
             h = barLoc.y + Power * Mathf.Sin(Rotation * Mathf.Deg2Rad) * t - Gravity * Mathf.Pow(t, 2) / 2;
@@ -83,61 +88,83 @@ public class Tank : MonoBehaviour
 
     void GetInputs()
     {
-        if(Input.GetKeyDown(KeyCode.M))
+        if(myTurn)
         {
-            mode = !mode;
-        }
+            //SWITCH
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                mode = !mode;
+            }
 
-        if(mode)
-        {
-            if(Input.GetKey(KeyCode.A))
+            //MOVEMENT
+            if (mode)
             {
-                Position.x -= .25f * canvas.Zoom;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                Position.x += .25f * canvas.Zoom;
-            }
-        }
-        else
-        {
-            Fire = Input.GetKeyDown(KeyCode.Space);
+                if(playerNum == 1)
+                {
+                    if (Input.GetKey(KeyCode.A) && Position.x > -480)
+                    {
+                        Position.x -= .25f * canvas.Zoom;
+                    }
+                    if (Input.GetKey(KeyCode.D) && Position.x < SCManager.instance.wall.topLeft.x - 25)
+                    {
+                        Position.x += .25f * canvas.Zoom;
+                    }
+                }
 
-            if (Input.GetKey(KeyCode.D))
-            {
-                if (Rotation != 360)
+                if (playerNum == 2)
                 {
-                    Rotation += .5f;
-                }
-                else
-                {
-                    Rotation = 0;
-                }
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                if (Rotation != 0)
-                {
-                    Rotation -= .5f;
-                }
-                else
-                {
-                    Rotation = 360;
+                    if (Input.GetKey(KeyCode.A) && Position.x < 480)
+                    {
+                        Position.x -= .25f * canvas.Zoom;
+                    }
+                    if (Input.GetKey(KeyCode.D) && Position.x > SCManager.instance.wall.bottomRight.x + 25)
+                    {
+                        Position.x += .25f * canvas.Zoom;
+                    }
                 }
             }
 
-            if (Input.GetKey(KeyCode.W))
+            //FIRE
+            else
             {
-                if (Power < 100)
+                Fire = Input.GetKeyDown(KeyCode.Space);
+
+                if (Input.GetKey(KeyCode.D))
                 {
-                    Power += .5f;
+                    if (Rotation != 360)
+                    {
+                        Rotation += .25f;
+                    }
+                    else
+                    {
+                        Rotation = 0;
+                    }
                 }
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                if (Power > 0)
+                if (Input.GetKey(KeyCode.A))
                 {
-                    Power -= .5f;
+                    if (Rotation != 0)
+                    {
+                        Rotation -= .25f;
+                    }
+                    else
+                    {
+                        Rotation = 360;
+                    }
+                }
+
+                if (Input.GetKey(KeyCode.W))
+                {
+                    if (Power < 100)
+                    {
+                        Power += .5f;
+                    }
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    if (Power > 0)
+                    {
+                        Power -= .5f;
+                    }
                 }
             }
         }
@@ -147,15 +174,15 @@ public class Tank : MonoBehaviour
     {
         Color tankColor;
         Color wheelColor;
-        if(player1)
+        if(playerNum == 1)
         {
-            tankColor = Color.blue;
+            tankColor = Color.cyan;
             wheelColor = Color.red;
         }
         else
         {
             tankColor = Color.red;
-            wheelColor = Color.blue;
+            wheelColor = Color.cyan;
         }
 
         float xzoomed = canvas.origin.x + Position.x * canvas.Zoom;
@@ -163,6 +190,7 @@ public class Tank : MonoBehaviour
         if (myTurn)
         {
             DrawereringTool.drawPowerbar(Position, Power, Color.yellow, canvas);
+            DrawereringTool.drawRotatebar(Position, Rotation / 360 * 100, Color.blue, canvas);
             if (mode) { DrawereringTool.drawOrigin(new Vector3(xzoomed, canvas.origin.y, 0), 20 * canvas.Zoom, Color.blue); }
             else { DrawereringTool.drawOrigin(new Vector3(xzoomed, canvas.origin.y, 0), 20 * canvas.Zoom, Color.red); }
         }
@@ -192,5 +220,13 @@ public class Tank : MonoBehaviour
         float rad = 10 * canvas.Zoom;
         DrawereringTool.drawCircle(16, rad, WheelA, wheelColor);
         DrawereringTool.drawCircle(16, rad, WheelB, wheelColor);
+
+
+        HBtopLeft = new Vector3(BodyD.x - (5 * canvas.Zoom), headA.y + (5 * canvas.Zoom));
+        HBbottomRight = new Vector3(BodyC.x + (5 + canvas.Zoom), BodyC.y - (5 * canvas.Zoom));
+        if (drawHitbox)
+        {
+            DrawereringTool.drawRectangle(HBtopLeft, HBbottomRight, Color.green);
+        }
     }
 }

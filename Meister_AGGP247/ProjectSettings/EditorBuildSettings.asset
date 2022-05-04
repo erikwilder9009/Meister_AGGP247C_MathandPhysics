@@ -11,13 +11,16 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/CollisionScene.unity
     guid: d0225fc79e289e24e978add2993793be
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Menu.unity
     guid: 9693383f2b1f6c240b97e987edb1800e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Cannon.unity
     guid: 4c054c287b4b1c648bc0c5041c7db6f5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SpaceShip.unity
     guid: 74677226bf109e64bb6b595a9968a836
+  - enabled: 1
+    path: Assets/Scenes/Scorched Earth.unity
+    guid: a6ac3d72ddd5af640b170b930c3947ef
   m_configObjects: {}
