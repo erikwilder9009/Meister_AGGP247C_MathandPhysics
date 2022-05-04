@@ -294,6 +294,33 @@ public class DrawereringTool : MonoBehaviour
         Glint.AddCommand(new Line(A, C, DrawC));
         Glint.AddCommand(new Line(B, D, DrawC));
     }
+
+    public static void SCEscape(Vector3 screenSize)
+    {
+        Color DrawC = Color.red;
+        Vector3 A = new Vector3(screenSize.x - 50, screenSize.y - 10);
+        Vector3 B = new Vector3(screenSize.x - 10, screenSize.y - 10);
+        Vector3 C = new Vector3(screenSize.x - 10, screenSize.y - 50);
+        Vector3 D = new Vector3(screenSize.x - 50, screenSize.y - 50);
+        if (MathTool.PointInRectangle(Input.mousePosition, A, B, C, D))
+        {
+            fillRectangle(A, B, C, D, Color.red);
+            if (Input.GetMouseButtonDown(0))
+            {
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+                Application.Quit();
+            }
+        }
+        Glint.AddCommand(new Line(A, B, DrawC));
+        Glint.AddCommand(new Line(B, C, DrawC));
+        Glint.AddCommand(new Line(C, D, DrawC));
+        Glint.AddCommand(new Line(D, A, DrawC));
+        Glint.AddCommand(new Line(A, C, DrawC));
+        Glint.AddCommand(new Line(B, D, DrawC));
+    }
+
     public static void drawGaugebar(float percentFull, Color color)
     {
         Vector3 A = new Vector3(0, 0);
@@ -312,6 +339,28 @@ public class DrawereringTool : MonoBehaviour
             x++;
         }
     }
+<<<<<<< Updated upstream
+=======
+    public static void drawPowerbar(Vector3 TankPos, float percentFull, Color color, SCCanvas.Scene canvas)
+    {
+        Vector3 A = new Vector3(canvas.origin.x + (TankPos.x - 50) * canvas.Zoom, canvas.origin.y - (50 * canvas.Zoom), 0);
+        Vector3 C = new Vector3(canvas.origin.x + (TankPos.x + 50) * canvas.Zoom, canvas.origin.y - (70 * canvas.Zoom), 0);
+        drawRectangle(A, C, color);
+
+        float x = Mathf.RoundToInt(A.x);
+        DrawereringTool.fillRectangle(A, new Vector3(A.x + ((C.x - A.x) * (percentFull / 100)), C.y), color);
+    }
+    public static void drawRotatebar(Vector3 TankPos, float percentFull, Color color, SCCanvas.Scene canvas)
+    {
+        Vector3 A = new Vector3(canvas.origin.x + (TankPos.x - 50) * canvas.Zoom, canvas.origin.y - (80 * canvas.Zoom), 0);
+        Vector3 C = new Vector3(canvas.origin.x + (TankPos.x + 50) * canvas.Zoom, canvas.origin.y - (100 * canvas.Zoom), 0);
+        drawRectangle(A, C, color);
+
+        float x = Mathf.RoundToInt(A.x);
+        DrawereringTool.fillRectangle(A, new Vector3(A.x + ((C.x - A.x) * (percentFull / 100)), C.y), color);
+    }
+
+>>>>>>> Stashed changes
 
     public static void drawTriangle(Vector3 A, Vector3 B, Vector3 C, Color color)
     {
@@ -374,5 +423,73 @@ public class DrawereringTool : MonoBehaviour
     public static void drawLine(Vector3 A, Vector3 B, Color color)
     {
         Glint.AddCommand(new Line(A, B, color));
+    }
+
+    
+    public static void drawNum(int num, float scale, Vector3 center, Color color)
+    {
+        if (num == 0)
+        {
+            Glint.AddCommand(new Line(new Vector3(center.x - (scale / 2), center.y + scale), new Vector3(center.x + (scale / 2), center.y + scale), color));
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y + scale), new Vector3(center.x + (scale / 2), center.y - scale), color));
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y - scale), new Vector3(center.x - (scale / 2), center.y - scale), color));
+            Glint.AddCommand(new Line(new Vector3(center.x - (scale / 2), center.y - scale), new Vector3(center.x - (scale / 2), center.y + scale), color));
+
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y + scale), new Vector3(center.x - (scale / 2), center.y - scale), color));
+        }
+        if (num == 1)
+        {
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y - scale), new Vector3(center.x, center.y + scale), color));
+
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y + scale), new Vector3(center.x - (scale / 2), center.y + (scale / 4)), color));
+
+            Glint.AddCommand(new Line(new Vector3(center.x - (scale / 2), center.y - scale), new Vector3(center.x + (scale / 2), center.y - scale), color));
+        }
+        if (num == 2)
+        {
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y + scale), new Vector3(center.x - (scale / 2), center.y + (scale / 4)), color));
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y + scale), new Vector3(center.x + (scale / 2), center.y + (scale / 4)), color));
+
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y + (scale / 4)), new Vector3(center.x - (scale / 2), center.y - scale), color));
+
+            Glint.AddCommand(new Line(new Vector3(center.x - (scale / 2), center.y - scale), new Vector3(center.x + (scale - (scale / 4)), center.y - scale), color));
+        }
+        if (num == 3)
+        {
+            Glint.AddCommand(new Line( new Vector3(center.x - (scale / 2), center.y + (scale / 2)),new Vector3(center.x, center.y + scale), color));
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y + scale), new Vector3(center.x + (scale / 2), center.y + (scale / 4)), color)); 
+
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y + (scale / 4)), new Vector3(center.x - (scale / 2), center.y), color));
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y - (scale / 4)), new Vector3(center.x - (scale / 2), center.y), color));
+
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y - scale), new Vector3(center.x - (scale / 2), center.y - (scale / 2)), color));
+            Glint.AddCommand(new Line(new Vector3(center.x, center.y - scale), new Vector3(center.x + (scale / 2), center.y - (scale / 4)), color));
+        }
+        if (num == 4)
+        {
+            Glint.AddCommand(new Line(new Vector3(center.x - (scale / 2), center.y + scale), new Vector3(center.x - (scale / 2), center.y), color)); 
+            Glint.AddCommand(new Line(new Vector3(center.x - (scale / 2), center.y), new Vector3(center.x + (scale - (scale / 4)), center.y), color));
+            Glint.AddCommand(new Line(new Vector3(center.x + (scale / 2), center.y + scale), new Vector3(center.x + (scale / 2), center.y - scale), color));
+        }
+        if (num == 5)
+        {
+            Glint.AddCommand(new Line(new Vector3(), new Vector3(), color));
+        }
+        if (num == 6)
+        {
+            Glint.AddCommand(new Line(new Vector3(), new Vector3(), color));
+        }
+        if (num == 7)
+        {
+            Glint.AddCommand(new Line(new Vector3(), new Vector3(), color));
+        }
+        if (num == 8)
+        {
+            Glint.AddCommand(new Line(new Vector3(), new Vector3(), color));
+        }
+        if (num == 9)
+        {
+            Glint.AddCommand(new Line(new Vector3(), new Vector3(), color));
+        }
     }
 }

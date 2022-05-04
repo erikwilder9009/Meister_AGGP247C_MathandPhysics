@@ -59,6 +59,14 @@ public class MathTool : MonoBehaviour
         }
         return false;
     }
+    static public bool PointInRectangle(Vector3 p, Vector3 a, Vector3 c)
+    {
+        if (PointInTriangle(p, a, new Vector3(a.x, c.y, 0), new Vector3(c.x, a.y, 0)) || PointInTriangle(p, new Vector3(a.x, c.y, 0), new Vector3(c.x, a.y, 0), c))
+        {
+            return true;
+        }
+        return false;
+    }
     static public bool PointInRectangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
     {
         if (PointInTriangle(p, a, b, d) || PointInTriangle(p, b, d, c))
